@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+    volumes:
+      - ./backend:/app
+    restart: unless-stopped
+    networks:
+      - orakh-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3010:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - orakh-network
+
+networks:
+  orakh-network:
+    driver: bridge 
