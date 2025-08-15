@@ -30,6 +30,16 @@ function App() {
   const [showWelcomeModal, setShowWelcomeModal] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
+  // Estado y referencia para la música de fondo
+  const [isMusicMuted, setIsMusicMuted] = useState(() => {
+    const savedMuted = localStorage.getItem('orakh_music_muted');
+    return savedMuted === 'true';
+  });
+  const playerRef = useRef<HTMLIFrameElement>(null);
+
+  // ID de video de YouTube para música de fondo relajante (sin copyright, instrumental)
+  const YOUTUBE_VIDEO_ID = 'vXh1I1p6W8M'; // Ejemplo: Música Relajante para Dormir
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -61,6 +71,21 @@ function App() {
     }
     // Para respuestas de Orakh: NO hacer scroll automático, mantener posición actual
   }, [messages])
+
+  // Controlar el estado del mute del reproductor de YouTube y guardarlo en localStorage
+  useEffect(() => {
+    if (playerRef.current) {
+      const iframe = playerRef.current;
+      // Solo enviar comandos si el iframe está listo (el reproductor de YouTube puede tardar en cargar)
+      const command = isMusicMuted ? 'mute' : 'unMute';
+      iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: command }), '*');
+      localStorage.setItem('orakh_music_muted', String(isMusicMuted));
+    }
+  }, [isMusicMuted]);
+
+  const toggleMusic = () => {
+    setIsMusicMuted(prev => !prev);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -185,6 +210,19 @@ function App() {
 
   return (
     <>
+      {/* Reproductor de música de fondo de YouTube (oculto) */}
+      <iframe
+        id="youtube-player"
+        ref={playerRef}
+        width="0"
+        height="0"
+        src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&loop=1&playlist=${YOUTUBE_VIDEO_ID}&controls=0&modestbranding=1&rel=0&showinfo=0&enablejsapi=1&mute=1`}
+        frameBorder="0"
+        allow="autoplay; encrypted-media"
+        style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}
+        title="Música de Fondo"
+      ></iframe>
+
       {/* Avatar flotante fuera del modal */}
       {showWelcomeModal && (
         <div className="modal-avatar-global">
@@ -299,21 +337,25 @@ function App() {
         </div>
       )}
 
-      {/* Chat Principal */}
+      {/* Contenedor principal del chat */}
       <div className="app-container">
         <div className="chat-container">
-          {/* Header */}
           <div className="chat-header">
             <div className="header-left">
-              <div className="avatar">
-                🌊
-              </div>
+              <div className="avatar">🌊</div>
               <div className="header-text">
                 <h1>Orakh Vox Nemis</h1>
                 <p>Guía Espiritual & Filosófico</p>
               </div>
             </div>
             <div className="header-actions">
+              <button
+                onClick={toggleMusic}
+                className="music-toggle-btn"
+                title={isMusicMuted ? 'Activar Música' : 'Desactivar Música'}
+              >
+                {isMusicMuted ? '🔇 Música OFF' : '🎵 Música ON'}
+              </button>
               <button
                 onClick={() => setShowWelcomeModal(true)}
                 className="help-btn"
