@@ -15,22 +15,24 @@ Orakh Vox Nemis es un asistente de IA espiritual que combina sabiduría de múlt
 - **Frontend**: React + TypeScript + Vite
 - **Backend**: FastAPI + Python 3.12
 - **IA**: DeepSeek API
-- **Contenedores**: Docker + Docker Compose
 
 ## 📋 Prerrequisitos
 
-- Docker y Docker Compose
+- Python 3.12
+- Node.js 18+
 - API Key de DeepSeek
 
 ## 🛠️ Instalación y Despliegue
 
-### 1. Clonar el repositorio
+### Desarrollo Local
+
+#### 1. Clonar el repositorio
 ```bash
 git clone <tu-repositorio>
 cd Orak
 ```
 
-### 2. Configurar variables de entorno
+#### 2. Configurar variables de entorno
 ```bash
 cp env.example .env
 ```
@@ -40,14 +42,31 @@ Edita el archivo `.env` y agrega tu API key de DeepSeek:
 DEEPSEEK_API_KEY=tu_api_key_aqui
 ```
 
-### 3. Desplegar con Docker Compose
+#### 3. Ejecutar la aplicación
 ```bash
-docker-compose up -d
+# Iniciar ambos servicios
+./start-local.sh
 ```
 
-### 4. Acceder a la aplicación
+#### 4. Acceder a la aplicación
 - **Frontend**: http://localhost:3010
 - **Backend API**: http://localhost:8000
+
+### Despliegue en Render.com
+
+#### 1. Conectar repositorio
+- Ve a [Render.com](https://render.com)
+- Conecta tu repositorio de GitHub
+- Selecciona "Blueprint" y usa el archivo `render.yaml`
+
+#### 2. Configurar variables de entorno
+En Render.com, configura:
+- `DEEPSEEK_API_KEY`: Tu API key de DeepSeek
+
+#### 3. Desplegar
+- Render detectará automáticamente la configuración
+- El backend se desplegará como Web Service
+- El frontend se desplegará como Static Site
 
 ## 🔧 Desarrollo Local
 
@@ -138,23 +157,19 @@ El sistema utiliza prompts especializados:
 |----------|-------------|-----------|
 | `DEEPSEEK_API_KEY` | API Key de DeepSeek | Sí |
 
-## 🐳 Comandos Docker Útiles
+## 🚀 Comandos Útiles
 
 ```bash
-# Ver logs
-docker-compose logs -f
+# Ver logs del backend
+tail -f backend/logs/app.log
 
 # Reiniciar servicios
-docker-compose restart
+pkill -f "uvicorn main:app"
+pkill -f "npm run dev"
+./start-local.sh
 
-# Detener servicios
-docker-compose down
-
-# Reconstruir imágenes
-docker-compose up --build
-
-# Ver estado de servicios
-docker-compose ps
+# Ver procesos en ejecución
+ps aux | grep -E "(uvicorn|npm)"
 ```
 
 ## 🚨 Solución de Problemas
@@ -163,7 +178,7 @@ docker-compose ps
 Si ves errores de autenticación, verifica que tu `DEEPSEEK_API_KEY` esté correctamente configurada en el archivo `.env`.
 
 ### Puerto ocupado
-Si los puertos 8080 o 3001 están ocupados, modifica el archivo `docker-compose.yml` para usar puertos diferentes.
+Si los puertos 3010 o 8000 están ocupados, modifica los scripts de inicio para usar puertos diferentes.
 
 ### Problemas de CORS
 El backend está configurado para permitir CORS desde cualquier origen. En producción, considera restringir esto a dominios específicos.

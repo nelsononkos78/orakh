@@ -144,9 +144,7 @@ temp/
 *.sln
 *.sw?
 
-# Docker
-.dockerignore
-docker-compose.override.yml
+# Docker (removed)
 
 # Local development
 *.local

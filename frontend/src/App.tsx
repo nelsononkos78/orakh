@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import DOMPurify from 'dompurify'
 import meditationBg from './assets/images/meditation-bg.jpg'
+import { API_CONFIG } from './config'
 
 interface Message {
   role: 'user' | 'orakh'
@@ -45,7 +46,7 @@ function App() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/orakh', {
+      const response = await fetch(`${API_CONFIG.baseURL}/api/orakh`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -92,39 +93,39 @@ function App() {
   }
 
   const handleProfundizar = async (msg: Message) => {
-    try {
-      setLoading(true)
-      const response = await fetch('/api/profundizar', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          respuesta_anterior: msg.content,
-          mensaje_usuario: messages[messages.findIndex(m => m.id === msg.id) - 1]?.content || ''
-        })
-      })
-      const data = await response.json()
-      setMessages(prev => [...prev, {
-        role: 'orakh',
-        content: data.response,
-        id: Date.now().toString()
-      }])
-    } catch (error) {
-      console.error('Error:', error)
-      setMessages(prev => [...prev, {
-        role: 'orakh',
-        content: 'Error al profundizar. Intenta nuevamente.',
-        id: Date.now().toString()
-      }])
-    } finally {
-      setLoading(false)
-    }
+                    try {
+                      setLoading(true)
+                      const response = await fetch(`${API_CONFIG.baseURL}/api/profundizar`, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                          respuesta_anterior: msg.content,
+                          mensaje_usuario: messages[messages.findIndex(m => m.id === msg.id) - 1]?.content || ''
+                        })
+                      })
+                      const data = await response.json()
+                      setMessages(prev => [...prev, {
+                        role: 'orakh',
+                        content: data.response,
+                        id: Date.now().toString()
+                      }])
+                    } catch (error) {
+                      console.error('Error:', error)
+                      setMessages(prev => [...prev, {
+                        role: 'orakh',
+                        content: 'Error al profundizar. Intenta nuevamente.',
+                        id: Date.now().toString()
+                      }])
+                    } finally {
+                      setLoading(false)
+                    }
   }
 
   const clearMemory = async () => {
     try {
-      await fetch('/api/clear_memory', { method: 'POST' })
+      await fetch(`${API_CONFIG.baseURL}/api/clear_memory`, { method: 'POST' })
       setMessages([{
         role: 'orakh',
         content: 'Memoria limpiada. ¿En qué puedo ayudarte ahora?',
@@ -291,16 +292,16 @@ function App() {
                   {msg.role === 'orakh' && !msg.isWelcome && (
                     <button
                       onClick={() => handleProfundizar(msg)}
-                      disabled={loading}
+                  disabled={loading}
                       className="profundizar-btn"
-                    >
+                >
                       <span>🪄</span>
                       <span>Desplegar el velo</span>
-                    </button>
-                  )}
+                </button>
+              )}
                 </div>
-              </div>
-            ))}
+            </div>
+          ))}
             {loading && (
               <div className="loading-message">
                 <div className="loading-content">
@@ -314,17 +315,17 @@ function App() {
               </div>
             )}
             <div ref={messagesEndRef} />
-          </div>
+        </div>
 
           {/* Input */}
           <div className="input-container">
             <form onSubmit={handleSubmit} className="input-form">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Escribe tu mensaje..."
-                disabled={loading}
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Escribe tu mensaje..."
+            disabled={loading}
                 className="input-field"
               />
               <button
@@ -334,10 +335,10 @@ function App() {
               >
                 <span>✨</span>
                 <span>Enviar</span>
-              </button>
-            </form>
-          </div>
-        </div>
+          </button>
+        </form>
+      </div>
+    </div>
       </div>
     </>
   )
