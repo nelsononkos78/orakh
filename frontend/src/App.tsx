@@ -50,25 +50,14 @@ function App() {
     }
   }
 
-  // Scroll automático: para mensajes del usuario va al final, para Orakh va a posición fija debajo del header
+  // Scroll automático: solo para mensajes del usuario va al final
   useEffect(() => {
     const lastMessage = messages[messages.length - 1]
-    if (lastMessage) {
-      if (lastMessage.role === 'user') {
-        // Para mensajes del usuario: scroll al final
-        scrollToBottom()
-      } else if (lastMessage.role === 'orakh') {
-        // Para respuestas de Orakh: scroll a posición fija debajo del header
-        const messagesContainer = document.querySelector('.messages-container')
-        if (messagesContainer) {
-          // Posición fija: 120px debajo del header (donde está la flecha)
-          ;(messagesContainer as HTMLElement).scrollTo({
-            top: 120,
-            behavior: 'smooth'
-          })
-        }
-      }
+    if (lastMessage && lastMessage.role === 'user') {
+      // Solo para mensajes del usuario: scroll al final
+      scrollToBottom()
     }
+    // Para respuestas de Orakh: NO hacer scroll automático, mantener posición actual
   }, [messages])
 
   const handleSubmit = async (e: React.FormEvent) => {
