@@ -596,6 +596,7 @@ body {
   justify-content: center;
   z-index: 1000;
   animation: fadeIn 0.3s ease-out;
+  margin-top: 30px; /* Bajar el modal 3 cm */
 }
 
 .modal-container {
@@ -795,6 +796,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   z-index: 1001;
+  margin-top: 30px; /* Bajar el avatar 3 cm */
 }
 
 .modal-avatar-global .modal-avatar {
