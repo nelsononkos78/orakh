@@ -1037,14 +1037,13 @@ body {
   .modal-container {
     margin: 0.5rem;
     padding: 0 1.5rem 1.5rem 1.5rem; /* Ajustar padding para pantallas pequeñas */
-    padding-top: 80px; /* Mantener padding superior ajustado */
-    height: 500px; /* Ajustar alto para pantallas pequeñas */
+    height: 600px; /* Ajustar alto para pantallas pequeñas */
     overflow: hidden;
-    margin-top: 40px; /* Ajustar margen para pantallas pequeñas */
+    margin-top: 60px; /* Ajustar margen para pantallas pequeñas */
   }
   
   .modal-header {
-    padding-top: 80px; /* Ajustar padding superior */
+    padding-top: 100px; /* Ajustar padding superior */
   }
 
   .modal-title {
@@ -1062,7 +1061,7 @@ body {
   }
 
   .modal-avatar-global {
-    top: calc(50% - 95vh / 2 - 90px + 60px); /* Ajuste de posición para avatar en pantallas pequeñas */
+    top: calc(50% - 95vh / 2 - 90px + 90px); /* Ajuste de posición para avatar en pantallas pequeñas */
   }
 
   .modal-avatar-global .modal-avatar {
@@ -1211,14 +1210,13 @@ body {
   .modal-container {
     margin: 0.25rem;
     padding: 0 1rem 1rem 1rem; /* Ajustar padding para pantallas extra pequeñas */
-    padding-top: 60px; /* Mantener padding superior ajustado */
-    height: 400px; /* Ajustar alto para pantallas extra pequeñas */
+    height: 500px; /* Ajustar alto para pantallas extra pequeñas */
     overflow: hidden;
-    margin-top: 30px; /* Ajustar margen para pantallas extra pequeñas */
+    margin-top: 40px; /* Ajustar margen para pantallas extra pequeñas */
   }
 
   .modal-header {
-    padding-top: 60px; /* Ajustar padding superior */
+    padding-top: 80px; /* Ajustar padding superior */
   }
 
   .modal-title {
@@ -1236,7 +1234,7 @@ body {
   }
 
   .modal-avatar-global {
-    top: calc(50% - 98vh / 2 - 75px + 50px); /* Ajuste de posición para avatar en pantallas extra pequeñas */
+    top: calc(50% - 98vh / 2 - 75px + 70px); /* Ajuste de posición para avatar en pantallas extra pequeñas */
   }
 
   .modal-avatar-global .modal-avatar {
