@@ -319,39 +319,56 @@ function App() {
 
           {/* Messages */}
           <div className="messages-container">
-            {messages.map((msg) => (
+            {messages.filter(msg => msg.role === 'user').map((msg) => (
               <div
                 key={msg.id}
                 data-message-id={msg.id}
                 className={`message ${msg.role}`}
               >
-                {msg.role === 'orakh' && (
-                  <div className="message-avatar">
-                    <img 
-                      src={orakhAvatar} 
-                      alt="Orakh Avatar" 
-                      className="orakh-avatar"
-                    />
-                  </div>
-                )}
                 <div className="message-content">
                   <div 
                     className="prose"
                     dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(msg.content) }} 
                   />
-                  {msg.role === 'orakh' && !msg.isWelcome && (
+                </div>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Respuestas fijas de Orakh debajo del header */}
+          <div className="orakh-responses-container">
+            {messages.filter(msg => msg.role === 'orakh').map((msg) => (
+              <div
+                key={msg.id}
+                data-message-id={msg.id}
+                className={`message ${msg.role}`}
+              >
+                <div className="message-avatar">
+                  <img 
+                    src={orakhAvatar} 
+                    alt="Orakh Avatar" 
+                    className="orakh-avatar"
+                  />
+                </div>
+                <div className="message-content">
+                  <div 
+                    className="prose"
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(msg.content) }} 
+                  />
+                  {!msg.isWelcome && (
                     <button
                       onClick={() => handleProfundizar(msg)}
-                  disabled={loading}
+                      disabled={loading}
                       className="profundizar-btn"
-                >
+                    >
                       <span>🪄</span>
                       <span>Desplegar el velo</span>
-                </button>
-              )}
+                    </button>
+                  )}
                 </div>
-            </div>
-          ))}
+              </div>
+            ))}
             {loading && (
               <div className="loading-message">
                 <div className="loading-content">
@@ -364,8 +381,7 @@ function App() {
                 </div>
               </div>
             )}
-            <div ref={messagesEndRef} />
-        </div>
+          </div>
 
           {/* Input */}
           <div className="input-container">
