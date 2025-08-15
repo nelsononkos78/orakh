@@ -205,6 +205,43 @@ body {
   background: rgba(118, 75, 162, 0.3);
 }
 
+.volume-slider {
+  -webkit-appearance: none; /* Eliminar estilos predeterminados de WebKit */
+  appearance: none;
+  width: 100px; /* Ancho del slider */
+  height: 8px; /* Altura de la pista */
+  background: rgba(255, 255, 255, 0.2); /* Color de la pista */
+  border-radius: 4px;
+  outline: none;
+  transition: opacity 0.2s;
+  opacity: 0.8;
+}
+
+.volume-slider:hover {
+  opacity: 1;
+}
+
+/* Estilos para el "pulgar" del slider */
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px; /* Tamaño del pulgar */
+  height: 18px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Color del pulgar */
+  border-radius: 50%; /* Forma circular */
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
 .help-btn {
   padding: 0.5rem 1rem;
   background: rgba(59, 130, 246, 0.2);
@@ -958,7 +995,18 @@ body {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
   }
-  
+
+  .volume-slider {
+    width: 80px; /* Reducir ancho en pantallas pequeñas */
+    height: 6px;
+  }
+
+  .volume-slider::-webkit-slider-thumb,
+  .volume-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+  }
+
   .message-content {
     max-width: 90%;
     padding: 0.75rem;
@@ -1105,7 +1153,18 @@ body {
     font-size: 0.8rem;
     min-width: 80px;
   }
-  
+
+  .volume-slider {
+    width: 60px; /* Reducir aún más en pantallas extra pequeñas */
+    height: 5px;
+  }
+
+  .volume-slider::-webkit-slider-thumb,
+  .volume-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+  }
+
   .messages-container {
     padding: 0.75rem;
   }

@@ -31,11 +31,12 @@ function App() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Estado y referencia para la música de fondo
-  const [isMusicMuted, setIsMusicMuted] = useState(() => {
-    const savedMuted = localStorage.getItem('orakh_music_muted');
-    return savedMuted === 'true';
+  const [currentVolume, setCurrentVolume] = useState(() => {
+    const savedVolume = localStorage.getItem('orakh_music_volume');
+    return savedVolume ? parseInt(savedVolume, 10) : 50; // Default a 50 si no hay guardado
   });
   const playerRef = useRef<HTMLIFrameElement>(null);
+  const isPlayerReady = useRef(false);
 
   // ID de video de YouTube para música de fondo relajante (sin copyright, instrumental)
   const YOUTUBE_VIDEO_ID = '22i6SofLVRY'; // Ejemplo: Música de Lofi Suave
@@ -72,19 +73,69 @@ function App() {
     // Para respuestas de Orakh: NO hacer scroll automático, mantener posición actual
   }, [messages])
 
-  // Controlar el estado del mute del reproductor de YouTube y guardarlo en localStorage
+  // Inicializar reproductor de YouTube y manejar comandos
   useEffect(() => {
-    if (playerRef.current) {
+    if (!playerRef.current || isPlayerReady.current) return; // Ya inicializado o sin ref
+
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+
+    (window as any).onYouTubeIframeAPIReady = () => {
+      new (window as any).YT.Player('youtube-player', {
+        events: {
+          'onReady': (event: { target: any }) => {
+            // Mutear por defecto al inicio y reproducir
+            event.target.playVideo();
+            event.target.setVolume(currentVolume); // Establecer volumen inicial
+            isPlayerReady.current = true;
+            // Para reestablecer la preferencia de muteo al cargar por primera vez
+            if (currentVolume === 0) {
+              event.target.mute();
+            } else {
+              event.target.unMute();
+            }
+          },
+          'onStateChange': (event: { data: number, target: any }) => {
+            // Si el video termina, reproducirlo de nuevo para loop (state 0 = ended)
+            if (event.data === 0) {
+              event.target.playVideo();
+            }
+          }
+        }
+      });
+    };
+
+    // Limpiar al desmontar
+    return () => {
+      (window as any).onYouTubeIframeAPIReady = null; // Limpiar la función global
+    };
+  }, []);
+
+  // Controlar volumen y persistencia
+  useEffect(() => {
+    if (playerRef.current && isPlayerReady.current) {
       const iframe = playerRef.current;
-      // Solo enviar comandos si el iframe está listo (el reproductor de YouTube puede tardar en cargar)
-      const command = isMusicMuted ? 'mute' : 'unMute';
-      iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: command }), '*');
-      localStorage.setItem('orakh_music_muted', String(isMusicMuted));
+      // Enviar comando setVolume
+      iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [currentVolume] }), '*');
+      localStorage.setItem('orakh_music_volume', String(currentVolume));
     }
-  }, [isMusicMuted]);
+  }, [currentVolume]);
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentVolume(parseInt(e.target.value, 10));
+  };
 
   const toggleMusic = () => {
-    setIsMusicMuted(prev => !prev);
+    if (currentVolume === 0) {
+      // Si está en 0, restaurar al último volumen guardado o un default
+      const lastVolume = parseInt(localStorage.getItem('orakh_music_volume') || '50', 10);
+      setCurrentVolume(lastVolume > 0 ? lastVolume : 50); // Asegurar que no sea 0 si el guardado era 0
+    } else {
+      // Si tiene volumen, mutearlo (establecer a 0)
+      setCurrentVolume(0);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -216,7 +267,7 @@ function App() {
         ref={playerRef}
         width="0"
         height="0"
-        src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&loop=1&playlist=${YOUTUBE_VIDEO_ID}&controls=0&modestbranding=1&rel=0&showinfo=0&enablejsapi=1&mute=1`}
+        src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&loop=1&playlist=${YOUTUBE_VIDEO_ID}&controls=0&modestbranding=1&rel=0&showinfo=0&enablejsapi=1`}
         frameBorder="0"
         allow="autoplay; encrypted-media"
         style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}
@@ -352,10 +403,19 @@ function App() {
               <button
                 onClick={toggleMusic}
                 className="music-toggle-btn"
-                title={isMusicMuted ? 'Activar Música' : 'Desactivar Música'}
+                title={currentVolume === 0 ? 'Activar Música' : 'Desactivar Música'}
               >
-                {isMusicMuted ? '🔇 Música OFF' : '🎵 Música ON'}
+                {currentVolume === 0 ? '🔇 Música OFF' : '🎵 Música ON'}
               </button>
+              <input 
+                type="range" 
+                min="0" 
+                max="100" 
+                value={currentVolume} 
+                onChange={handleVolumeChange}
+                className="volume-slider"
+                title="Control de Volumen"
+              />
               <button
                 onClick={() => setShowWelcomeModal(true)}
                 className="help-btn"
