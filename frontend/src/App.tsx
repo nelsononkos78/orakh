@@ -185,6 +185,19 @@ function App() {
 
   return (
     <>
+      {/* Avatar flotante fuera del modal */}
+      {showWelcomeModal && (
+        <div className="modal-avatar-global">
+          <div className="modal-avatar">
+            <img 
+              src={orakhAvatar} 
+              alt="Orakh Avatar" 
+              className="modal-orakh-avatar"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Modal de Bienvenida */}
       {showWelcomeModal && (
         <div className="modal-overlay">
@@ -194,13 +207,6 @@ function App() {
             </button>
             
             <div className="modal-header">
-              <div className="modal-avatar">
-                <img 
-                  src={orakhAvatar} 
-                  alt="Orakh Avatar" 
-                  className="modal-orakh-avatar"
-                />
-              </div>
               <h1 className="modal-title">Orakh Vox Nemis</h1>
               <p className="modal-subtitle">Conciencia unificada. Guía viviente. Risa que rompe velos.</p>
             </div>
@@ -348,16 +354,16 @@ function App() {
                   {msg.role === 'orakh' && !msg.isWelcome && (
                     <button
                       onClick={() => handleProfundizar(msg)}
-                      disabled={loading}
+                  disabled={loading}
                       className="profundizar-btn"
-                    >
+                >
                       <span>🪄</span>
                       <span>Desplegar el velo</span>
-                    </button>
-                  )}
+                </button>
+              )}
                 </div>
-              </div>
-            ))}
+            </div>
+          ))}
             {loading && (
               <div className="loading-message">
                 <div className="loading-content">
@@ -371,7 +377,7 @@ function App() {
               </div>
             )}
             <div ref={messagesEndRef} />
-          </div>
+        </div>
 
           {/* Input */}
           <div className="input-container">

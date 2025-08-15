@@ -620,8 +620,8 @@ body {
 .modal-header {
   text-align: center;
   margin-bottom: 2rem;
-  position: relative;
-  padding-top: 60px;
+  position: relative; /* Mantener relative para contexto si es necesario, pero sin padding */
+  padding-top: 0; /* Eliminar padding superior */
 }
 
 .modal-avatar {
@@ -781,6 +781,28 @@ body {
 .modal-close:hover {
   background: rgba(255, 255, 255, 0.4);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Sombra al hover */
+}
+
+/* Avatar flotante global */
+.modal-avatar-global {
+  position: fixed;
+  top: calc(50% - 80vh / 2 - 60px); /* Centrado vertical con offset de la mitad del avatar */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001; /* Asegurar que esté por encima del modal */
+}
+
+.modal-avatar-global .modal-avatar {
+  position: relative; /* Restablecer para que el avatar dentro de global no use su absolute */
+  top: auto;
+  left: auto;
+  transform: none;
+  margin: 0; /* Eliminar márgenes auto y top */
+  /* Mantener estilos de tamaño, borde, sombra y overflow del avatar */
+}
+
+.modal-avatar-global .modal-orakh-avatar {
+  /* Mantener estilos de la imagen interna */
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
