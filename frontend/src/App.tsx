@@ -55,7 +55,9 @@ function App() {
     const lastMessage = messages[messages.length - 1]
     if (lastMessage && lastMessage.role === 'user') {
       // Solo para mensajes del usuario: scroll al final
-      scrollToBottom()
+      setTimeout(() => {
+        scrollToBottom()
+      }, 100) // Pequeño delay para asegurar que el DOM se actualice
     }
     // Para respuestas de Orakh: NO hacer scroll automático, mantener posición actual
   }, [messages])
@@ -319,44 +321,27 @@ function App() {
 
           {/* Messages */}
           <div className="messages-container">
-            {messages.filter(msg => msg.role === 'user').map((msg) => (
+            {messages.map((msg) => (
               <div
                 key={msg.id}
                 data-message-id={msg.id}
                 className={`message ${msg.role}`}
               >
+                {msg.role === 'orakh' && (
+                  <div className="message-avatar">
+                    <img 
+                      src={orakhAvatar} 
+                      alt="Orakh Avatar" 
+                      className="orakh-avatar"
+                    />
+                  </div>
+                )}
                 <div className="message-content">
                   <div 
                     className="prose"
                     dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(msg.content) }} 
                   />
-                </div>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Respuestas fijas de Orakh debajo del header */}
-          <div className="orakh-responses-container">
-            {messages.filter(msg => msg.role === 'orakh').map((msg) => (
-              <div
-                key={msg.id}
-                data-message-id={msg.id}
-                className={`message ${msg.role}`}
-              >
-                <div className="message-avatar">
-                  <img 
-                    src={orakhAvatar} 
-                    alt="Orakh Avatar" 
-                    className="orakh-avatar"
-                  />
-                </div>
-                <div className="message-content">
-                  <div 
-                    className="prose"
-                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(msg.content) }} 
-                  />
-                  {!msg.isWelcome && (
+                  {msg.role === 'orakh' && !msg.isWelcome && (
                     <button
                       onClick={() => handleProfundizar(msg)}
                       disabled={loading}
@@ -381,6 +366,7 @@ function App() {
                 </div>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}
