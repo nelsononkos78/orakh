@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import DOMPurify from 'dompurify'
 import { API_CONFIG } from './config'
 import meditationBg from './assets/images/meditation-bg.jpg'
-import orakhAvatar from './assets/images/@orack.jpg'
+import orakhAvatar from './assets/images/orack.jpg'
 
 interface Message {
   role: 'user' | 'orakh'
