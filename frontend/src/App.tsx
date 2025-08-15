@@ -35,7 +35,7 @@ function App() {
     const savedVolume = localStorage.getItem('orakh_music_volume');
     return savedVolume ? parseInt(savedVolume, 10) : 50; // Default a 50 si no hay guardado
   });
-  const playerRef = useRef<HTMLIFrameElement>(null);
+  const playerRef = useRef<any>(null); // Ahora almacena el objeto YT.Player
   const isPlayerReady = useRef(false);
 
   // ID de video de YouTube para música de fondo relajante (sin copyright, instrumental)
@@ -75,7 +75,7 @@ function App() {
 
   // Inicializar reproductor de YouTube y manejar comandos
   useEffect(() => {
-    if (!playerRef.current || isPlayerReady.current) return; // Ya inicializado o sin ref
+    if (isPlayerReady.current) return; // Ya inicializado
 
     const tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
@@ -86,20 +86,18 @@ function App() {
       new (window as any).YT.Player('youtube-player', {
         events: {
           'onReady': (event: { target: any }) => {
-            // Mutear por defecto al inicio y reproducir
-            event.target.playVideo();
-            event.target.setVolume(currentVolume); // Establecer volumen inicial
+            playerRef.current = event.target; // Guardar la instancia del reproductor
             isPlayerReady.current = true;
-            // Para reestablecer la preferencia de muteo al cargar por primera vez
             if (currentVolume === 0) {
               event.target.mute();
             } else {
+              event.target.setVolume(currentVolume);
               event.target.unMute();
             }
+            event.target.playVideo(); // Intentar reproducir automáticamente
           },
           'onStateChange': (event: { data: number, target: any }) => {
-            // Si el video termina, reproducirlo de nuevo para loop (state 0 = ended)
-            if (event.data === 0) {
+            if (event.data === (window as any).YT.PlayerState.ENDED) {
               event.target.playVideo();
             }
           }
@@ -109,33 +107,29 @@ function App() {
 
     // Limpiar al desmontar
     return () => {
-      (window as any).onYouTubeIframeAPIReady = null; // Limpiar la función global
+      if (playerRef.current && typeof playerRef.current.destroy === 'function') {
+        playerRef.current.destroy();
+      }
+      (window as any).onYouTubeIframeAPIReady = null;
     };
   }, []);
 
   // Controlar volumen y persistencia
   useEffect(() => {
     if (playerRef.current && isPlayerReady.current) {
-      const iframe = playerRef.current;
-      // Enviar comando setVolume
-      iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [currentVolume] }), '*');
+      // Llamar directamente al método setVolume del objeto reproductor
+      playerRef.current.setVolume(currentVolume);
+      if (currentVolume === 0) {
+        playerRef.current.mute();
+      } else {
+        playerRef.current.unMute();
+      }
       localStorage.setItem('orakh_music_volume', String(currentVolume));
     }
   }, [currentVolume]);
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentVolume(parseInt(e.target.value, 10));
-  };
-
-  const toggleMusic = () => {
-    if (currentVolume === 0) {
-      // Si está en 0, restaurar al último volumen guardado o un default
-      const lastVolume = parseInt(localStorage.getItem('orakh_music_volume') || '50', 10);
-      setCurrentVolume(lastVolume > 0 ? lastVolume : 50); // Asegurar que no sea 0 si el guardado era 0
-    } else {
-      // Si tiene volumen, mutearlo (establecer a 0)
-      setCurrentVolume(0);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -257,6 +251,10 @@ function App() {
 
   const closeWelcomeModal = () => {
     setShowWelcomeModal(false)
+    // Intentar reproducir el video cuando el modal se cierra (interacción del usuario)
+    if (playerRef.current && typeof playerRef.current.playVideo === 'function') {
+      playerRef.current.playVideo();
+    }
   }
 
   return (
@@ -264,7 +262,7 @@ function App() {
       {/* Reproductor de música de fondo de YouTube (oculto) */}
       <iframe
         id="youtube-player"
-        ref={playerRef}
+        ref={playerRef} // NOTA: playerRef ahora apunta al objeto YT.Player, no al iframe. Se usará el ID.
         width="0"
         height="0"
         src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&loop=1&playlist=${YOUTUBE_VIDEO_ID}&controls=0&modestbranding=1&rel=0&showinfo=0&enablejsapi=1`}
@@ -400,13 +398,6 @@ function App() {
               </div>
             </div>
             <div className="header-actions">
-              <button
-                onClick={toggleMusic}
-                className="music-toggle-btn"
-                title={currentVolume === 0 ? 'Activar Música' : 'Desactivar Música'}
-              >
-                {currentVolume === 0 ? '🔇 Música OFF' : '🎵 Música ON'}
-              </button>
               <input 
                 type="range" 
                 min="0" 
