@@ -38,7 +38,7 @@ function App() {
   const playerRef = useRef<HTMLIFrameElement>(null);
 
   // ID de video de YouTube para música de fondo relajante (sin copyright, instrumental)
-  const YOUTUBE_VIDEO_ID = 'vXh1I1p6W8M'; // Ejemplo: Música Relajante para Dormir
+  const YOUTUBE_VIDEO_ID = '22i6SofLVRY'; // Ejemplo: Música de Lofi Suave
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
