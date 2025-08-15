@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import DOMPurify from 'dompurify'
 import { API_CONFIG } from './config'
+import meditationBg from './assets/images/meditation-bg.jpg'
 
 interface Message {
   role: 'user' | 'orakh'
@@ -10,6 +11,11 @@ interface Message {
 }
 
 function App() {
+  // Configurar la imagen de fondo como variable CSS
+  useEffect(() => {
+    document.documentElement.style.setProperty('--meditation-bg', `url(${meditationBg})`);
+  }, []);
+
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'orakh',

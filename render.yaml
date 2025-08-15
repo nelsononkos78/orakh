@@ -1,7 +1,7 @@
 services:
   # Backend API Service
   - type: web
-    name: orakh-backend
+    name: orakh-1
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
@@ -20,4 +20,4 @@ services:
     staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
-        value: https://orakh-backend.onrender.com 
+        value: https://orakh-1.onrender.com 

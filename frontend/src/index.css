@@ -28,7 +28,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background-image: url('/Image_fx (1).jpg');
+  background-image: var(--meditation-bg);
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
