@@ -14,13 +14,17 @@ def cargar_prompt(nombre_archivo: str) -> str:
         return f.read()
 
 # CORS configuration
+ALLOWED_ORIGINS = [os.getenv("FRONTEND_URL", "*")]  
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.get("/health")
+async def health(): # health check endpoint to check if the server is running 
+    return {"status": "ok"}
 
 class UserMessage(BaseModel):
     message: str
