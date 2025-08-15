@@ -606,7 +606,7 @@ body {
   padding: 0 2rem 2rem 2rem; /* Padding horizontal y abajo, cero arriba */
   max-width: 600px;
   width: 90%;
-  max-height: 80vh;
+  height: 600px; /* Alto fijo de 600px */
   overflow: hidden; /* Ocultar overflow del contenedor principal */
   display: flex; /* Usar flexbox */
   flex-direction: column; /* Apilar elementos verticalmente */
@@ -988,7 +988,7 @@ body {
     margin: 0.5rem;
     padding: 0 1.5rem 1.5rem 1.5rem; /* Ajustar padding para pantallas pequeñas */
     padding-top: 80px; /* Mantener padding superior ajustado */
-    max-height: 95vh;
+    height: 500px; /* Ajustar alto para pantallas pequeñas */
     overflow: hidden;
     margin-top: 40px; /* Ajustar margen para pantallas pequeñas */
   }
@@ -1151,7 +1151,7 @@ body {
     margin: 0.25rem;
     padding: 0 1rem 1rem 1rem; /* Ajustar padding para pantallas extra pequeñas */
     padding-top: 60px; /* Mantener padding superior ajustado */
-    max-height: 98vh;
+    height: 400px; /* Ajustar alto para pantallas extra pequeñas */
     overflow: hidden;
     margin-top: 30px; /* Ajustar margen para pantallas extra pequeñas */
   }
