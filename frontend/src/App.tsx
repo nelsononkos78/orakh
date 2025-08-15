@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import DOMPurify from 'dompurify'
 import { API_CONFIG } from './config'
 import meditationBg from './assets/images/meditation-bg.jpg'
+import orakhAvatar from './assets/images/ORAKH.PNG'
 
 interface Message {
   role: 'user' | 'orakh'
@@ -33,8 +34,12 @@ function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  // Solo hacer scroll automático para mensajes del usuario, no para respuestas de Orakh
   useEffect(() => {
-    scrollToBottom()
+    const lastMessage = messages[messages.length - 1]
+    if (lastMessage && lastMessage.role === 'user') {
+      scrollToBottom()
+    }
   }, [messages])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -289,6 +294,15 @@ function App() {
                 key={msg.id}
                 className={`message ${msg.role}`}
               >
+                {msg.role === 'orakh' && (
+                  <div className="message-avatar">
+                    <img 
+                      src={orakhAvatar} 
+                      alt="Orakh Avatar" 
+                      className="orakh-avatar"
+                    />
+                  </div>
+                )}
                 <div className="message-content">
                   <div 
                     className="prose"

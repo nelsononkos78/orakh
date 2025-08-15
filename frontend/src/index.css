@@ -197,6 +197,7 @@ body {
 .message {
   display: flex;
   animation: slideUp 0.3s ease-out;
+  margin-bottom: 1.5rem;
 }
 
 .message.user {
@@ -205,6 +206,7 @@ body {
 
 .message.orakh {
   justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .message-content {
@@ -220,13 +222,16 @@ body {
 .message.user .message-content {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  border-radius: 18px 18px 4px 18px;
 }
 
 .message.orakh .message-content {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(102, 126, 234, 0.15);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(102, 126, 234, 0.3);
   color: white;
+  border-radius: 18px 18px 18px 4px;
+  flex: 1;
 }
 
 /* Botón de profundizar */
@@ -485,6 +490,33 @@ body {
 .messages-container::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
 }
+
+/* Avatar de Orakh */
+.message-avatar {
+  display: flex;
+  align-items: flex-start;
+  margin-right: 12px;
+  margin-top: 4px;
+}
+
+.orakh-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  filter: blur(0.5px);
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(102, 126, 234, 0.4);
+}
+
+.orakh-avatar:hover {
+  filter: blur(0px);
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+}
+
+
 
 /* Animaciones */
 @keyframes slideUp {
