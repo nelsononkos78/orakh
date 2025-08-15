@@ -1061,7 +1061,7 @@ body {
   }
 
   .modal-avatar-global {
-    top: calc(50% - 95vh / 2 - 90px + 120px); /* Ajuste de posición para avatar en pantallas pequeñas */
+    top: calc(50% - 95vh / 2 - 90px + 140px); /* Ajuste de posición para avatar en pantallas pequeñas */
   }
 
   .modal-avatar-global .modal-avatar {
@@ -1234,7 +1234,7 @@ body {
   }
 
   .modal-avatar-global {
-    top: calc(50% - 98vh / 2 - 75px + 100px); /* Ajuste de posición para avatar en pantallas extra pequeñas */
+    top: calc(50% - 98vh / 2 - 75px + 120px); /* Ajuste de posición para avatar en pantallas extra pequeñas */
   }
 
   .modal-avatar-global .modal-avatar {
