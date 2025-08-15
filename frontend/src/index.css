@@ -603,12 +603,13 @@ body {
   backdrop-filter: blur(15px);
   border: 1px solid rgba(102, 126, 234, 0.15);
   border-radius: 20px;
-  padding: 3rem 2rem 2rem 2rem;
+  padding: 0 2rem 2rem 2rem; /* Padding horizontal y abajo, cero arriba */
   max-width: 600px;
   width: 90%;
   max-height: 80vh;
-  overflow-y: auto;
-  overflow-x: visible;
+  overflow: hidden; /* Ocultar overflow del contenedor principal */
+  display: flex; /* Usar flexbox */
+  flex-direction: column; /* Apilar elementos verticalmente */
   scrollbar-gutter: stable;
   box-shadow: 
     0 20px 40px rgba(102, 126, 234, 0.1),
@@ -619,9 +620,10 @@ body {
 
 .modal-header {
   text-align: center;
-  margin-bottom: 2rem;
-  position: relative; /* Mantener relative para contexto si es necesario, pero sin padding */
-  padding-top: 0; /* Eliminar padding superior */
+  margin-bottom: 1rem; /* Reducir margen inferior */
+  position: relative;
+  padding-top: 100px; /* Dejar espacio para el avatar flotante */
+  flex-shrink: 0; /* Asegurar que no se encoja */
 }
 
 .modal-avatar {
@@ -737,7 +739,9 @@ body {
 
 .modal-footer {
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 1.5rem; /* Margen superior para separar del contenido */
+  padding-top: 1rem; /* Padding superior para el pie de página */
+  flex-shrink: 0; /* Asegurar que no se encoja */
 }
 
 .modal-btn {
@@ -817,6 +821,23 @@ body {
 .modal-orakh-avatar:hover {
   transform: scale(1.05);
   box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+}
+
+/* Contenido del modal con scroll */
+.modal-scroll-content {
+  flex: 1; /* Ocupar el espacio restante */
+  overflow-y: auto; /* Scroll vertical */
+  overflow-x: hidden; /* Ocultar scroll horizontal */
+  padding: 0 0.5rem; /* Padding interno para el contenido */
+  padding-top: 1rem; /* Espacio superior para el contenido scrollable */
+}
+
+/* Estilos para el pie de página dentro del scroll */
+.modal-footer {
+  text-align: center;
+  margin-top: 1.5rem; /* Margen superior para separar del contenido */
+  padding-top: 1rem; /* Padding superior para el pie de página */
+  flex-shrink: 0; /* Asegurar que no se encoja */
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
@@ -964,12 +985,30 @@ body {
   /* Modal responsive */
   .modal-container {
     margin: 0.5rem;
-    padding: 1.5rem;
-    padding-top: 80px; /* Ajustar padding superior para pantallas pequeñas */
+    padding: 0 1.5rem 1.5rem 1.5rem; /* Ajustar padding para pantallas pequeñas */
+    padding-top: 80px; /* Mantener padding superior ajustado */
     max-height: 95vh;
-    overflow-y: auto;
+    overflow: hidden;
   }
   
+  .modal-header {
+    padding-top: 80px; /* Ajustar padding superior */
+  }
+
+  .modal-title {
+    margin-top: 1.5rem; /* Mantener margen ajustado */
+  }
+
+  .modal-scroll-content {
+    padding: 0 0.25rem; /* Padding interno más pequeño */
+    padding-top: 0.75rem;
+  }
+
+  .modal-footer {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+  }
+
   .modal-avatar-global {
     top: calc(50% - 95vh / 2 - 90px); /* Ajuste de posición para avatar en pantallas pequeñas */
   }
@@ -979,10 +1018,6 @@ body {
     height: 180px;
     border: 4px solid rgba(102, 126, 234, 0.35);
     box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-  }
-
-  .modal-title {
-    margin-top: 1.5rem; /* Ajustar margen para pantallas pequeñas */
   }
 
   .modal-features {
@@ -1112,10 +1147,28 @@ body {
   /* Modal responsive */
   .modal-container {
     margin: 0.25rem;
-    padding: 1rem;
-    padding-top: 60px; /* Ajustar padding superior para pantallas extra pequeñas */
+    padding: 0 1rem 1rem 1rem; /* Ajustar padding para pantallas extra pequeñas */
+    padding-top: 60px; /* Mantener padding superior ajustado */
     max-height: 98vh;
-    overflow-y: auto;
+    overflow: hidden;
+  }
+
+  .modal-header {
+    padding-top: 60px; /* Ajustar padding superior */
+  }
+
+  .modal-title {
+    margin-top: 1rem; /* Mantener margen ajustado */
+  }
+
+  .modal-scroll-content {
+    padding: 0 0.25rem; /* Padding interno más pequeño */
+    padding-top: 0.5rem;
+  }
+
+  .modal-footer {
+    margin-top: 0.75rem;
+    padding-top: 0.5rem;
   }
 
   .modal-avatar-global {
@@ -1127,10 +1180,6 @@ body {
     height: 150px;
     border: 3px solid rgba(102, 126, 234, 0.3);
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.35);
-  }
-
-  .modal-title {
-    margin-top: 1rem; /* Ajustar margen para pantallas extra pequeñas */
   }
 
   .modal-section {
