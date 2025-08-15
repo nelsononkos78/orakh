@@ -34,7 +34,7 @@ function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  // Scroll automático: para mensajes del usuario va al final, para Orakh va a la posición del usuario
+  // Scroll automático: para mensajes del usuario va al final, para Orakh va a posición fija debajo del header
   useEffect(() => {
     const lastMessage = messages[messages.length - 1]
     if (lastMessage) {
@@ -42,17 +42,14 @@ function App() {
         // Para mensajes del usuario: scroll al final
         scrollToBottom()
       } else if (lastMessage.role === 'orakh') {
-        // Para respuestas de Orakh: scroll hasta donde está el usuario
-        const userMessage = messages[messages.length - 2]
-        if (userMessage && userMessage.role === 'user') {
-          // Encontrar el elemento del mensaje del usuario y hacer scroll hasta ahí
-          const userMessageElement = document.querySelector(`[data-message-id="${userMessage.id}"]`)
-          if (userMessageElement) {
-            userMessageElement.scrollIntoView({ 
-              behavior: 'smooth', 
-              block: 'center' 
-            })
-          }
+        // Para respuestas de Orakh: scroll a posición fija debajo del header
+        const messagesContainer = document.querySelector('.messages-container')
+        if (messagesContainer) {
+          // Posición fija: 120px debajo del header (donde está la flecha)
+          messagesContainer.scrollTo({
+            top: 120,
+            behavior: 'smooth'
+          })
         }
       }
     }
