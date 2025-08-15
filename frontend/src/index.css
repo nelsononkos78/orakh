@@ -596,7 +596,6 @@ body {
   justify-content: center;
   z-index: 1000;
   animation: fadeIn 0.3s ease-out;
-  margin-top: 30px; /* Bajar el modal 3 cm */
 }
 
 .modal-container {
@@ -617,6 +616,7 @@ body {
     0 0 0 1px rgba(255, 255, 255, 0.2) inset;
   animation: slideUp 0.3s ease-out;
   position: relative;
+  margin-top: 50px; /* Bajar el modal 5 cm */
 }
 
 .modal-header {
@@ -792,11 +792,10 @@ body {
 /* Avatar flotante global */
 .modal-avatar-global {
   position: fixed;
-  top: calc(50% - 80vh / 2 - 125px); /* Ajustar para la mitad del nuevo tamaño de avatar (250px / 2) */
+  top: calc(50% - 80vh / 2 - 125px + 70px); /* Bajar 5cm con modal + 2cm adicionales */
   left: 50%;
   transform: translateX(-50%);
   z-index: 1001;
-  margin-top: 30px; /* Bajar el avatar 3 cm */
 }
 
 .modal-avatar-global .modal-avatar {
@@ -991,6 +990,7 @@ body {
     padding-top: 80px; /* Mantener padding superior ajustado */
     max-height: 95vh;
     overflow: hidden;
+    margin-top: 40px; /* Ajustar margen para pantallas pequeñas */
   }
   
   .modal-header {
@@ -1012,7 +1012,7 @@ body {
   }
 
   .modal-avatar-global {
-    top: calc(50% - 95vh / 2 - 90px); /* Ajuste de posición para avatar en pantallas pequeñas */
+    top: calc(50% - 95vh / 2 - 90px + 60px); /* Ajuste de posición para avatar en pantallas pequeñas */
   }
 
   .modal-avatar-global .modal-avatar {
@@ -1153,6 +1153,7 @@ body {
     padding-top: 60px; /* Mantener padding superior ajustado */
     max-height: 98vh;
     overflow: hidden;
+    margin-top: 30px; /* Ajustar margen para pantallas extra pequeñas */
   }
 
   .modal-header {
@@ -1174,7 +1175,7 @@ body {
   }
 
   .modal-avatar-global {
-    top: calc(50% - 98vh / 2 - 75px); /* Ajuste de posición para avatar en pantallas extra pequeñas */
+    top: calc(50% - 98vh / 2 - 75px + 50px); /* Ajuste de posición para avatar en pantallas extra pequeñas */
   }
 
   .modal-avatar-global .modal-avatar {
