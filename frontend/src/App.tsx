@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import DOMPurify from 'dompurify'
-import meditationBg from './assets/images/meditation-bg.jpg'
 import { API_CONFIG } from './config'
 
 interface Message {
