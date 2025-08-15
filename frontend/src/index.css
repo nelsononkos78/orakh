@@ -505,15 +505,35 @@ body {
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  filter: blur(0.5px);
-  transition: all 0.3s ease;
+  filter: blur(2px);
+  transition: all 0.5s ease;
   box-shadow: 0 0 15px rgba(102, 126, 234, 0.4);
+  opacity: 0;
+  animation: avatarAppear 0.8s ease-out forwards;
 }
 
 .orakh-avatar:hover {
   filter: blur(0px);
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+}
+
+@keyframes avatarAppear {
+  0% {
+    opacity: 0;
+    filter: blur(4px);
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.7;
+    filter: blur(2px);
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0.5px);
+    transform: scale(1);
+  }
 }
 
 
