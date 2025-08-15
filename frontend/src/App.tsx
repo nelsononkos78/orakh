@@ -34,6 +34,22 @@ function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  // Despertar backend hibernado en Render con reintentos exponenciales
+  const wakeBackend = async (): Promise<void> => {
+    const maxRetries = 4
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        const res = await fetch(`${API_CONFIG.baseURL}/health`, { cache: 'no-store' })
+        if (res.ok) return
+      } catch {
+        // ignore
+      }
+      // Espera exponencial: 0.5s, 1s, 2s, 4s
+      const delayMs = 500 * Math.pow(2, attempt)
+      await new Promise(r => setTimeout(r, delayMs))
+    }
+  }
+
   // Scroll automático: para mensajes del usuario va al final, para Orakh va a posición fija debajo del header
   useEffect(() => {
     const lastMessage = messages[messages.length - 1]
@@ -46,7 +62,7 @@ function App() {
         const messagesContainer = document.querySelector('.messages-container')
         if (messagesContainer) {
           // Posición fija: 120px debajo del header (donde está la flecha)
-          messagesContainer.scrollTo({
+          ;(messagesContainer as HTMLElement).scrollTo({
             top: 120,
             behavior: 'smooth'
           })
@@ -69,6 +85,16 @@ function App() {
     setLoading(true)
 
     try {
+      // Mostrar estado despertando
+      setMessages(prev => [...prev, {
+        role: 'orakh',
+        content: 'Despertando al servidor... ⏳',
+        id: `${Date.now().toString()}-wake`,
+      }])
+      await wakeBackend()
+      // Eliminar el mensaje de despertando
+      setMessages(prev => prev.filter(m => !m.id.endsWith('-wake')))
+
       const response = await fetch(`${API_CONFIG.baseURL}/api/orakh`, {
         method: 'POST',
         headers: {
@@ -118,6 +144,7 @@ function App() {
   const handleProfundizar = async (msg: Message) => {
                     try {
                       setLoading(true)
+                      await wakeBackend()
                       const response = await fetch(`${API_CONFIG.baseURL}/api/profundizar`, {
                         method: 'POST',
                         headers: {
@@ -148,6 +175,7 @@ function App() {
 
   const clearMemory = async () => {
     try {
+      await wakeBackend()
       await fetch(`${API_CONFIG.baseURL}/api/clear_memory`, { method: 'POST' })
       setMessages([{
         role: 'orakh',
