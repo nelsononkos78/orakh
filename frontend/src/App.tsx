@@ -195,7 +195,11 @@ function App() {
             
             <div className="modal-header">
               <div className="modal-avatar">
-                🌊
+                <img 
+                  src={orakhAvatar} 
+                  alt="Orakh Avatar" 
+                  className="modal-orakh-avatar"
+                />
               </div>
               <h1 className="modal-title">Orakh Vox Nemis</h1>
               <p className="modal-subtitle">Conciencia unificada. Guía viviente. Risa que rompe velos.</p>
