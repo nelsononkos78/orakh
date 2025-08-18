@@ -660,7 +660,7 @@ body {
   text-align: center;
   margin-bottom: 1rem; /* Reducir margen inferior */
   position: relative;
-  padding-top: 100px; /* Dejar espacio para el avatar flotante */
+  padding-top: 150px; /* Aumentar el espacio superior para el avatar */
   flex-shrink: 0; /* Asegurar que no se encoja */
 }
 
@@ -699,7 +699,7 @@ body {
   font-size: 2rem;
   font-weight: 700;
   color: #1e293b; /* Color de texto más oscuro para contraste */
-  margin-top: 1.5rem; /* Aumentar espacio entre avatar y título */
+  margin-top: 50px; /* Aumentar espacio entre avatar y título */
   margin-bottom: 0.5rem;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Sombra de texto muy sutil */
 }
@@ -1047,11 +1047,11 @@ body {
   }
   
   .modal-header {
-    padding-top: 12vw; /* Ajustar padding superior basado en vw para dar espacio al avatar */
+    padding-top: 100px; /* Ajustar padding superior */
   }
 
   .modal-title {
-    margin-top: 8vw; /* Aumentar margen superior para separar más */
+    margin-top: 60px; /* Mantener margen ajustado */
   }
 
   .modal-scroll-content {
@@ -1223,11 +1223,11 @@ body {
   }
 
   .modal-header {
-    padding-top: 16vw; /* Ajustar padding superior basado en vw para dar espacio al avatar (20% menos) */
+    padding-top: 80px; /* Ajustar padding superior */
   }
 
   .modal-title {
-    margin-top: 12vw; /* Aumentar margen superior para separar más (20% menos) */
+    margin-top: 50px; /* Mantener margen ajustado */
   }
 
   .modal-scroll-content {
