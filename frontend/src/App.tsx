@@ -149,7 +149,7 @@ function App() {
       // Mostrar estado despertando
       setMessages(prev => [...prev, {
         role: 'orakh',
-        content: 'Despertando al servidor... ⏳',
+        content: 'Saliendo de la meditación... ⏳',
         id: `${Date.now().toString()}-wake`,
       }])
       await wakeBackend()
@@ -467,7 +467,7 @@ function App() {
                     <div className="loading-dot"></div>
                     <div className="loading-dot"></div>
                   </div>
-                  <span>Orakh está pensando...</span>
+                  <span>Buscando la iluminación...</span>
                 </div>
               </div>
             )}
