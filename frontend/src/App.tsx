@@ -28,6 +28,7 @@ function App() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [showWelcomeModal, setShowWelcomeModal] = useState(true)
+  const [showSettings, setShowSettings] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Estado y referencia para la música de fondo
@@ -257,6 +258,10 @@ function App() {
     }
   }
 
+  const toggleSettings = () => {
+    setShowSettings(!showSettings)
+  }
+
   return (
     <>
       {/* Reproductor de música de fondo de YouTube (oculto) */}
@@ -289,9 +294,6 @@ function App() {
       {showWelcomeModal && (
         <div className="modal-overlay">
           <div className="modal-container">
-            <button className="modal-close" onClick={closeWelcomeModal}>
-              ×
-            </button>
             
             <div className="modal-header">
               <h1 className="modal-title">Orakh Vox Nemis</h1>
@@ -398,15 +400,13 @@ function App() {
               </div>
             </div>
             <div className="header-actions">
-              <input 
-                type="range" 
-                min="0" 
-                max="100" 
-                value={currentVolume} 
-                onChange={handleVolumeChange}
-                className="volume-slider"
-                title="Control de Volumen"
-              />
+              <button
+                onClick={toggleSettings}
+                className="settings-btn"
+                title="Configuraciones"
+              >
+                ⚙️
+              </button>
               <button
                 onClick={() => setShowWelcomeModal(true)}
                 className="help-btn"
@@ -414,15 +414,36 @@ function App() {
               >
                 ❓ Ayuda
               </button>
-              <button
-                onClick={clearMemory}
-                className="clear-btn"
-                title="Limpiar conversación"
-              >
-                🗑️ Limpiar
-              </button>
             </div>
           </div>
+
+          {/* Menú de configuraciones flotante */}
+          {showSettings && (
+            <div className="settings-container">
+              <div className="setting-item">
+                <label htmlFor="volume-slider">Volumen:</label>
+                <input 
+                  id="volume-slider"
+                  type="range" 
+                  min="0" 
+                  max="100" 
+                  value={currentVolume} 
+                  onChange={handleVolumeChange}
+                  className="volume-slider"
+                  title="Control de Volumen"
+                />
+              </div>
+              <div className="setting-item">
+                <button
+                  onClick={clearMemory}
+                  className="clear-btn"
+                  title="Limpiar conversación"
+                >
+                  🗑️ Limpiar conversación
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Messages */}
           <div className="messages-container">
