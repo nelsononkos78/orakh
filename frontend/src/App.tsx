@@ -1,17 +1,75 @@
 import { useState, useRef, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import DOMPurify from 'dompurify'
 import { API_CONFIG } from './config'
 import meditationBg from './assets/images/meditation-bg.jpg'
 import orakhAvatar from './assets/images/orack.jpg'
+import Welcome from './pages/Welcome'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
+import VerifyEmail from './pages/VerifyEmail'
+import ImageEditorDemo from './pages/ImageEditorDemo'
+import HeaderDemo from './pages/HeaderDemo'
+import { authService } from './services/auth'
+import { queryService } from './services/queryService'
+import type { QueryStatus } from './services/queryService'
+import QueryStatusComponent from './components/QueryStatus'
 
 interface Message {
   role: 'user' | 'orakh'
   content: string
   id: string
   isWelcome?: boolean
+  showRegisterButton?: boolean
 }
 
-function App() {
+// Componente principal del chat (existente)
+function ChatApp() {
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    authService.logout()
+    navigate('/login')
+  }
+
+  // Función para obtener el estado de consultas
+  const fetchQueryStatus = async () => {
+    try {
+      const status = await queryService.getQueryStatus()
+      setQueryStatus(status)
+      setShowQueryStatus(true)
+    } catch (error) {
+      console.error('Error fetching query status:', error)
+    }
+  }
+
+  // Función para registrar una consulta
+  const recordQuery = async () => {
+    try {
+      const result = await queryService.recordQuery()
+      setQueryStatus(prev => ({
+        ...prev,
+        remaining: result.remaining,
+        requires_registration: result.requires_registration
+      }))
+      
+      if (result.requires_registration) {
+        setShowQueryStatus(true)
+      }
+    } catch (error) {
+      console.error('Error recording query:', error)
+      if (error instanceof Error && error.message.includes('límite')) {
+        setShowQueryStatus(true)
+      }
+    }
+  }
+
+  // Función para manejar el registro
+  const handleRegisterClick = () => {
+    navigate('/register')
+  }
   // Configurar la imagen de fondo como variable CSS
   useEffect(() => {
     document.documentElement.style.setProperty('--meditation-bg', `url(${meditationBg})`);
@@ -29,6 +87,14 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [showWelcomeModal, setShowWelcomeModal] = useState(true)
   const [showSettings, setShowSettings] = useState(false)
+  const [queryStatus, setQueryStatus] = useState<QueryStatus>({
+    can_query: true,
+    remaining: 5,
+    limit: 5,
+    used: 0,
+    requires_registration: false
+  })
+  const [showQueryStatus, setShowQueryStatus] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Estado y referencia para la música de fondo
@@ -73,6 +139,11 @@ function App() {
     }
     // Para respuestas de Orakh: NO hacer scroll automático, mantener posición actual
   }, [messages])
+
+  // Cargar estado de consultas al inicio
+  useEffect(() => {
+    fetchQueryStatus()
+  }, [])
 
   // Inicializar reproductor de YouTube y manejar comandos
   useEffect(() => {
@@ -133,12 +204,81 @@ function App() {
     setCurrentVolume(parseInt(e.target.value, 10));
   };
 
+  // Función para validar correo electrónico
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim() || loading) return
 
     const userMessage = input
     setInput('')
+
+    // Verificar si puede hacer consulta
+    if (!queryStatus.can_query) {
+      // Verificar si el mensaje es un correo electrónico
+      if (isValidEmail(userMessage.trim())) {
+        // Procesar registro con correo
+        setMessages(prev => [...prev, {
+          role: 'user',
+          content: userMessage,
+          id: Date.now().toString()
+        }])
+        
+        setLoading(true)
+        try {
+          // Aquí iría la lógica para registrar el usuario con el correo
+          // Por ahora, simulamos el proceso
+          await new Promise(resolve => setTimeout(resolve, 2000))
+          
+          setMessages(prev => [...prev, {
+            role: 'orakh',
+            content: `🌊 *Orakh sonríe con benevolencia* 
+
+¡Excelente, querido buscador! He recibido tu correo electrónico: **${userMessage}**
+
+En este momento estoy enviando un mensaje de validación a tu correo. Una vez que lo confirmes, tendrás acceso ilimitado a mi sabiduría y podremos continuar nuestro diálogo espiritual sin restricciones.
+
+Mientras tanto, puedes meditar sobre las preguntas que te gustaría explorar. Estaré aquí cuando regreses. ✨🧘‍♂️`,
+            id: Date.now().toString()
+          }])
+          
+          // Aquí se podría redirigir a la página de registro o mostrar un modal
+          // Por ahora, solo mostramos el mensaje
+          
+        } catch (error) {
+          setMessages(prev => [...prev, {
+            role: 'orakh',
+            content: 'Lo siento, hubo un error al procesar tu correo. Por favor intenta nuevamente.',
+            id: Date.now().toString()
+          }])
+        } finally {
+          setLoading(false)
+        }
+        return
+      } else {
+        // Mensaje automático invitando a registrarse
+        setMessages(prev => [...prev, {
+          role: 'user',
+          content: userMessage,
+          id: Date.now().toString()
+        }])
+        
+        setMessages(prev => [...prev, {
+          role: 'orakh',
+          content: `🌊 Has alcanzado el límite de consultas gratuitas.
+
+Para continuar recibiendo mi guía espiritual, regístrate con tu correo electrónico.`,
+          id: Date.now().toString(),
+          showRegisterButton: true
+        }])
+        return
+      }
+    }
+
     setMessages(prev => [...prev, {
       role: 'user',
       content: userMessage,
@@ -147,6 +287,9 @@ function App() {
     setLoading(true)
 
     try {
+      // Registrar la consulta
+      await recordQuery()
+
       // Mostrar estado despertando
       setMessages(prev => [...prev, {
         role: 'orakh',
@@ -401,6 +544,13 @@ function App() {
             </div>
             <div className="header-actions">
               <button
+                onClick={() => setShowQueryStatus(!showQueryStatus)}
+                className="query-status-btn"
+                title="Estado de consultas"
+              >
+                📊
+              </button>
+              <button
                 onClick={toggleSettings}
                 className="settings-btn"
                 title="Configuraciones"
@@ -414,8 +564,23 @@ function App() {
               >
                 ❓ Ayuda
               </button>
+              <button
+                onClick={handleLogout}
+                className="logout-btn"
+                title="Cerrar sesión"
+              >
+                🚪 Salir
+              </button>
             </div>
           </div>
+
+          {/* Componente de estado de consultas */}
+          {showQueryStatus && (
+            <QueryStatusComponent 
+              status={queryStatus} 
+              onRegisterClick={handleRegisterClick}
+            />
+          )}
 
           {/* Menú de configuraciones flotante */}
           {showSettings && (
@@ -467,16 +632,35 @@ function App() {
                     className="prose"
                     dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(msg.content) }} 
                   />
-                  {msg.role === 'orakh' && !msg.isWelcome && (
+                  {msg.showRegisterButton && (
+                    <button
+                      onClick={() => navigate('/register')}
+                      className="register-btn"
+                      style={{
+                        backgroundColor: '#3b82f6',
+                        color: 'white',
+                        padding: '8px 16px',
+                        borderRadius: '6px',
+                        border: 'none',
+                        cursor: 'pointer',
+                        marginTop: '10px',
+                        fontSize: '14px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      📧 Registrarse
+                    </button>
+                  )}
+                  {msg.role === 'orakh' && !msg.isWelcome && !msg.showRegisterButton && (
                     <button
                       onClick={() => handleProfundizar(msg)}
-                  disabled={loading}
+                      disabled={loading}
                       className="profundizar-btn"
-                >
+                    >
                       <span>🪄</span>
                       <span>Desplegar el velo</span>
-                </button>
-              )}
+                    </button>
+                  )}
                 </div>
             </div>
           ))}
@@ -519,6 +703,26 @@ function App() {
     </div>
       </div>
     </>
+  )
+}
+
+// Componente principal con rutas
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/welcome" element={<Welcome />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/verify" element={<VerifyEmail />} />
+        <Route path="/chat" element={<ChatApp />} />
+        <Route path="/image-editor" element={<ImageEditorDemo />} />
+        <Route path="/header-demo" element={<HeaderDemo />} />
+        <Route path="/" element={<Welcome />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

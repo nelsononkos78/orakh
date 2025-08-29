@@ -23,7 +23,7 @@ if [ ! -d "node_modules" ]; then
 fi
 
 echo "✅ Dependencias verificadas"
-echo "🌐 Iniciando servidor de desarrollo en http://localhost:3010"
+echo "🌐 Iniciando servidor de desarrollo en http://localhost:2800"
 
 # Iniciar el servidor de desarrollo
-npm run dev -- --port 3010 
+npm run dev -- --port 2800 

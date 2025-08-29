@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: orakh-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://orakh-backend.onrender.com
+      - key: VITE_ENVIRONMENT
+        value: production 

@@ -1,0 +1,102 @@
+1. �� CONFIGURACIÓN SMTP:
+Valores exactos:
+SMTP_HOST: smtp.gmail.com
+SMTP_PORT: 587
+TLS: starttls() (no use_tls ni start_tls como parámetros)
+Librería: smtplib (estándar de Python)
+2. �� CONFIGURACIÓN DE GMAIL:
+Configuración requerida:
+✅ Verificación en 2 pasos: OBLIGATORIA
+✅ Contraseña de aplicación: OBLIGATORIA (16 caracteres)
+❌ Contraseña normal: NO FUNCIONA
+Pasos en Gmail:
+Ir a Google Account → Security
+Activar 2-Step Verification
+Ir a App passwords
+Generar contraseña de 16 caracteres para "Mail"
+3. �� CÓDIGO DE ENVÍO EXACTO:
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+def send_email(self, to_email: str, subject: str, html_content: str) -> bool:
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = subject
+    msg['From'] = self.smtp_user
+    msg['To'] = to_email
+    
+    html_part = MIMEText(html_content, 'html')
+    msg.attach(html_part)
+    
+    with smtplib.SMTP(self.smtp_host, self.smtp_port) as server:
+        server.starttls()  # ← CONFIGURACIÓN CLAVE
+        server.login(self.smtp_user, self.smtp_password)
+        server.send_message(msg)
+        
+        4. �� VARIABLES DE ENTORNO:
+# Email Configuration (SMTP)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=tu_email@gmail.com
+SMTP_PASSWORD=abcd efgh ijkl mnop
+
+Nota: La contraseña de aplicación tiene espacios, pero se usa tal como viene de Google.
+
+5. �� LIBRERÍAS Y DEPENDENCIAS:
+requirements.txt:
+
+python-dotenv>=1.0.0
+jinja2>=3.1.6
+
+Librerías usadas:
+smtplib (incluida en Python)
+email.mime.text (incluida en Python)
+email.mime.multipart (incluida en Python)
+jinja2 (para templates HTML)
+python-dotenv (para variables de entorno)
+Versión Python: 3.12 (compatible con 3.8+)
+6. 📄 CÓDIGO COMPLETO FUNCIONAL:
+El archivo email_service.py completo que implementé incluye:
+Características principales:
+✅ Carga automática de .env desde directorio padre
+✅ Modo simulado si no hay credenciales
+✅ Templates HTML con Jinja2
+✅ Manejo de errores robusto
+✅ Logging detallado de éxito/error
+✅ Templates responsivos y profesionales
+Funciones disponibles:
+send_verification_email() - Email de verificación
+send_welcome_email() - Email de bienvenida
+send_email() - Función base de envío
+7. 🚀 CONFIGURACIÓN ESPECÍFICA QUE FUNCIONA:
+Para Gmail específicamente:
+
+# CONFIGURACIÓN EXACTA QUE FUNCIONA
+smtp_host = "smtp.gmail.com"
+smtp_port = 587
+smtp_user = "tu_email@gmail.com"
+smtp_password = "abcd efgh ijkl mnop"  # Contraseña de aplicación
+
+# EN EL CÓDIGO
+with smtplib.SMTP(smtp_host, smtp_port) as server:
+    server.starttls()  # ← OBLIGATORIO para Gmail
+    server.login(smtp_user, smtp_password)
+    server.send_message(msg)
+
+8. ⚠️ PUNTOS CRÍTICOS:
+Contraseña de aplicación: 16 caracteres con espacios
+starttls(): Obligatorio para Gmail
+Verificación 2 pasos: Debe estar activada
+Puerto 587: No usar 465 (requiere SSL diferente)
+Carga de .env: Desde directorio padre del backend
+
+9. 🔍 DEBUGGING:
+Si no funciona, verificar:
+
+print(f"SMTP_USER: {self.smtp_user}")
+print(f"Password length: {len(self.smtp_password)}")
+print(f"SMTP_HOST: {self.smtp_host}")
+print(f"SMTP_PORT: {self.smtp_port}")
+
+Esta es la configuración exacta que implementé y que funciona correctamente en el proyecto 

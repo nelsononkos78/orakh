@@ -51,7 +51,7 @@ pip install -r requirements.txt
 export $(cat ../.env | xargs)
 
 echo "✅ Configuración verificada"
-echo "🌐 Iniciando servidor en http://localhost:8000"
+echo "🌐 Iniciando servidor en http://localhost:2900"
 
 # Iniciar el servidor
-uvicorn main:app --reload --host 0.0.0.0 --port 8000 
+uvicorn main:app --reload --host 0.0.0.0 --port 2900 
