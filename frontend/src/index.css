@@ -37,7 +37,7 @@ body {
   padding: 0;
 }
 
-/* Fondo con imagen de meditación */
+/* Fondo con gradiente */
 .app-container {
   min-height: 100vh;
   display: flex;
@@ -45,11 +45,6 @@ body {
   justify-content: center;
   padding: 1rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  background-image: var(--meditation-bg), linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
   position: relative;
   overflow-x: hidden;
   box-sizing: border-box;
@@ -169,20 +164,20 @@ body {
 
 .clear-btn {
   padding: 0.6rem 1.2rem;
-  background: rgba(239, 68, 68, 0.2);
-  color: #dc2626;
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: rgba(0, 0, 0, 0.3);
+  color: #667eea;
+  border: 1px solid rgba(102, 126, 234, 0.4);
   border-radius: 10px;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .clear-btn:hover {
-  background: rgba(239, 68, 68, 0.3);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
 }
 
@@ -230,27 +225,27 @@ body {
 
 .help-btn {
   padding: 0.6rem 1.2rem;
-  background: rgba(59, 130, 246, 0.2);
-  color: #1e40af;
-  border: 1px solid rgba(59, 130, 246, 0.4);
+  background: rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .help-btn:hover {
-  background: rgba(59, 130, 246, 0.3);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
 }
 
 .settings-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
   width: 45px;
   height: 45px;
   display: flex;
@@ -258,13 +253,13 @@ body {
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   font-size: 1.2rem;
 }
 
 .settings-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px) rotate(90deg);
 }
 
@@ -279,7 +274,65 @@ body {
   padding: 1.25rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   z-index: 500;
-  animation: slideDown 0.3s ease-out;
+}
+
+/* Solo aplicar slideDown en desktop */
+@media (min-width: 768px) {
+  .settings-container {
+    animation: slideDown 0.3s ease-out;
+  }
+}
+
+/* Overlay para cerrar en móvil */
+.settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 499;
+  display: none;
+}
+
+/* Mostrar overlay en móvil */
+@media (max-width: 767px) {
+  .settings-overlay {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .settings-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 300px;
+    z-index: 501;
+    animation: slideInCenter 0.3s ease-out;
+  }
+}
+
+@keyframes slideInCenter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideDown {
@@ -315,19 +368,20 @@ body {
   width: 100%;
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
-  background: rgba(239, 68, 68, 0.15);
-  color: #dc2626;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(0, 0, 0, 0.3);
+  color: #667eea;
+  border: 1px solid rgba(102, 126, 234, 0.3);
   border-radius: 8px;
   font-weight: 600;
   transition: all 0.3s ease;
 }
 
 .settings-container .clear-btn:hover {
-  background: rgba(239, 68, 68, 0.25);
+  background: rgba(0, 0, 0, 0.5);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
 
 /* Mensajes */
 .messages-container {
@@ -352,6 +406,7 @@ body {
 .message.orakh {
   justify-content: flex-start;
   align-items: flex-start;
+  gap: 12px;
 }
 
 .message-content {
@@ -371,19 +426,21 @@ body {
 }
 
 .message.orakh .message-content {
-  background: rgba(102, 126, 234, 0.15);
+  background: #041666c5;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(102, 126, 234, 0.3);
+  border: 1px solid rgba(15, 36, 83, 0.6);
   color: white;
   border-radius: 18px 18px 18px 4px;
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Botón de profundizar */
 .profundizar-btn {
   margin-top: 0.75rem;
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  background: linear-gradient(135deg, #8b5cf6 0%, #db2777 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -394,10 +451,13 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .profundizar-btn:hover {
-  background: linear-gradient(135deg, #9333ea 0%, #db2777 100%);
+  background: linear-gradient(135deg, #7c3aed 0%, #be185d 100%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
 }
 
 .profundizar-btn:disabled {
@@ -459,7 +519,7 @@ body {
 .input-field {
   flex: 1;
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(21, 44, 179, 0.61);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
@@ -475,13 +535,14 @@ body {
 .input-field:focus {
   outline: none;
   border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .send-btn {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #0f32a7 0%, #040120 100%);
+  color: rgb(177, 172, 172);
   border: none;
   border-radius: 12px;
   font-weight: 500;
@@ -490,14 +551,16 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .send-btn:hover {
-  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  background: linear-gradient(135deg, #012e1b 0%, #25550a 100%);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
 }
 
 .send-btn:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -640,14 +703,13 @@ body {
 .message-avatar {
   display: flex;
   align-items: flex-start;
-  margin-right: 12px;
-  margin-top: 4px;
+  flex-shrink: 0;
 }
 
 .orakh-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
   object-fit: cover;
   border: 2px solid rgba(255, 255, 255, 0.3);
   filter: blur(2px);
@@ -1053,6 +1115,10 @@ body {
     text-align: center;
   }
   
+  .avatar {
+    display: none;
+  }
+  
   .header-text h1 {
     font-size: 1.8rem;
   }
@@ -1097,8 +1163,8 @@ body {
   }
   
   .orakh-avatar {
-    width: 35px;
-    height: 35px;
+    width: 50px;
+    height: 50px;
   }
   
   .input-container {
@@ -1156,7 +1222,7 @@ body {
 
   .modal-avatar-global {
     top: 50%;
-    transform: translate(-50%, -130%); /* Ajuste para pantallas pequeñas */
+    transform: translate(-50%, -200%); /* Subir 50% más */
   }
 
   .modal-avatar-global .modal-avatar {
@@ -1209,6 +1275,10 @@ body {
   .header-left {
     flex-direction: column;
     text-align: center;
+  }
+  
+  .avatar {
+    display: none;
   }
   
   .header-text h1 {
@@ -1266,14 +1336,13 @@ body {
   }
   
   .orakh-avatar {
-    width: 30px;
-    height: 30px;
+    width: 45px;
+    height: 45px;
     margin-right: 8px;
   }
   
   .message-avatar {
-    margin-right: 8px;
-    margin-top: 2px;
+    flex-shrink: 0;
   }
   
   .input-container {
@@ -1332,7 +1401,7 @@ body {
 
   .modal-avatar-global {
     top: 50%;
-    transform: translate(-50%, -120%); /* Ajuste para pantallas extra pequeñas */
+    transform: translate(-50%, -190%); /* Subir 50% más */
   }
 
   .modal-avatar-global .modal-avatar {

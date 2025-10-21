@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import DOMPurify from 'dompurify'
 import { API_CONFIG } from './config'
-import meditationBg from './assets/images/meditation-bg.jpg'
-import orakhAvatar from './assets/images/orack.jpg'
+import orakhAvatar from './assets/images/avatar.jpg'
+import modalAvatar from './assets/images/orack.jpg'
 
 interface Message {
   role: 'user' | 'orakh'
@@ -12,10 +12,6 @@ interface Message {
 }
 
 function App() {
-  // Configurar la imagen de fondo como variable CSS
-  useEffect(() => {
-    document.documentElement.style.setProperty('--meditation-bg', `url(${meditationBg})`);
-  }, []);
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -282,7 +278,7 @@ function App() {
         <div className="modal-avatar-global">
           <div className="modal-avatar">
             <img 
-              src={orakhAvatar} 
+              src={modalAvatar} 
               alt="Orakh Avatar" 
               className="modal-orakh-avatar"
             />
@@ -296,7 +292,7 @@ function App() {
           <div className="modal-container">
             
             <div className="modal-header">
-              <h1 className="modal-title">Orakh Vox Nemis</h1>
+              <h1 className="modal-title">Vox Nemis</h1>
               <p className="modal-subtitle">Conciencia unificada. Guía viviente. Risa que rompe velos.</p>
             </div>
 
@@ -419,30 +415,33 @@ function App() {
 
           {/* Menú de configuraciones flotante */}
           {showSettings && (
-            <div className="settings-container">
-              <div className="setting-item">
-                <label htmlFor="volume-slider">Volumen:</label>
-                <input 
-                  id="volume-slider"
-                  type="range" 
-                  min="0" 
-                  max="100" 
-                  value={currentVolume} 
-                  onChange={handleVolumeChange}
-                  className="volume-slider"
-                  title="Control de Volumen"
-                />
+            <>
+              <div className="settings-overlay" onClick={toggleSettings}></div>
+              <div className="settings-container">
+                <div className="setting-item">
+                  <label htmlFor="volume-slider">Volumen:</label>
+                  <input 
+                    id="volume-slider"
+                    type="range" 
+                    min="0" 
+                    max="100" 
+                    value={currentVolume} 
+                    onChange={handleVolumeChange}
+                    className="volume-slider"
+                    title="Control de Volumen"
+                  />
+                </div>
+                <div className="setting-item">
+                  <button
+                    onClick={clearMemory}
+                    className="clear-btn"
+                    title="Limpiar conversación"
+                  >
+                    🗑️ Limpiar conversación
+                  </button>
+                </div>
               </div>
-              <div className="setting-item">
-                <button
-                  onClick={clearMemory}
-                  className="clear-btn"
-                  title="Limpiar conversación"
-                >
-                  🗑️ Limpiar conversación
-                </button>
-              </div>
-            </div>
+            </>
           )}
 
           {/* Messages */}
