@@ -64,8 +64,10 @@ async def get_orakh_response(messages: list) -> str:
     payload = {
         "model": MODEL,
         "messages": messages_list,
-        "temperature": 0.7,
-        "max_tokens": 1500
+        "max_tokens": 1500,
+        "temperature": 1.2,
+        "top_p": 0.95,
+        "stream": False
     }
 
     try:
