@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
 import os
-from deepseek_api import get_orakh_response
+from deepseek_api import get_orakh_response, IA_PROVIDER, MODEL, PROVIDER_NAME
 from memory import add_to_memory, get_memory, clear_memory
 import traceback
 
@@ -85,3 +85,23 @@ async def profundizar(data: ProfundizarRequest):
         print(f"Error en /api/profundizar: {str(e)}")
         print(f"Traceback completo:\n{error_trace}")
         raise HTTPException(status_code=500, detail=f"Error al profundizar: {str(e)}")
+
+@app.get("/api/info")
+async def get_system_info():
+    """Endpoint para obtener información del sistema: proveedor, modelo y prompts"""
+    try:
+        maestro_prompt = cargar_prompt("maestro_prompt.txt")
+        profundidad_prompt = cargar_prompt("profundidad.txt")
+        
+        return {
+            "provider": PROVIDER_NAME,
+            "provider_code": IA_PROVIDER,
+            "model": MODEL,
+            "maestro_prompt": maestro_prompt,
+            "profundidad_prompt": profundidad_prompt
+        }
+    except Exception as e:
+        error_trace = traceback.format_exc()
+        print(f"Error en /api/info: {str(e)}")
+        print(f"Traceback completo:\n{error_trace}")
+        raise HTTPException(status_code=500, detail=f"Error al obtener información: {str(e)}")

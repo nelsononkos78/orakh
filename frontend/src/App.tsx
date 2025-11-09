@@ -25,6 +25,14 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [showWelcomeModal, setShowWelcomeModal] = useState(true)
   const [showSettings, setShowSettings] = useState(false)
+  const [showInfoModal, setShowInfoModal] = useState(false)
+  const [systemInfo, setSystemInfo] = useState<{
+    provider: string
+    provider_code: string
+    model: string
+    maestro_prompt: string
+    profundidad_prompt: string
+  } | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Estado y referencia para la música de fondo
@@ -258,6 +266,51 @@ function App() {
     setShowSettings(!showSettings)
   }
 
+  // Cargar información del sistema
+  const loadSystemInfo = async () => {
+    try {
+      await wakeBackend()
+      const response = await fetch(`${API_CONFIG.baseURL}/api/info`)
+      if (!response.ok) throw new Error('Error al cargar información')
+      const data = await response.json()
+      setSystemInfo(data)
+      setShowInfoModal(true)
+    } catch (error) {
+      console.error('Error al cargar información del sistema:', error)
+      alert('Error al cargar información del sistema')
+    }
+  }
+
+  // Detectar clave secreta "voxnemis" en el input
+  useEffect(() => {
+    if (input.toLowerCase().trim() === 'voxnemis') {
+      setInput('')
+      loadSystemInfo()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [input])
+
+  // Atajo de teclado: Ctrl+Shift+I (no interfiere con navegador)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+Shift+I - Solo activar si no estamos en un input o textarea
+      if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+        const target = e.target as HTMLElement
+        const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable
+        if (!isInput) {
+          e.preventDefault()
+          e.stopPropagation()
+          loadSystemInfo()
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown, true)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown, true)
+    }
+  }, [])
+
   return (
     <>
       {/* Reproductor de música de fondo de YouTube (oculto) */}
@@ -384,6 +437,66 @@ function App() {
         </div>
       )}
 
+      {/* Modal de Información del Sistema */}
+      {showInfoModal && systemInfo && (
+        <div className="modal-overlay" onClick={() => setShowInfoModal(false)}>
+          <div className="info-modal-container" onClick={(e) => e.stopPropagation()}>
+            <div className="info-modal-header">
+              <h2>🔮 Información del Sistema</h2>
+              <button 
+                className="info-modal-close"
+                onClick={() => setShowInfoModal(false)}
+                title="Cerrar (Esc)"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="info-modal-content">
+              <div className="info-section">
+                <h3>⚙️ Configuración de IA</h3>
+                <div className="info-grid">
+                  <div className="info-item">
+                    <span className="info-label">Proveedor:</span>
+                    <span className="info-value">{systemInfo.provider}</span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">Código:</span>
+                    <span className="info-value">{systemInfo.provider_code}</span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">Modelo:</span>
+                    <span className="info-value">{systemInfo.model}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="info-section">
+                <h3>📜 Prompt Maestro</h3>
+                <div className="prompt-container">
+                  <pre className="prompt-text">{systemInfo.maestro_prompt}</pre>
+                </div>
+              </div>
+
+              <div className="info-section">
+                <h3>🌌 Prompt de Profundización</h3>
+                <div className="prompt-container">
+                  <pre className="prompt-text">{systemInfo.profundidad_prompt}</pre>
+                </div>
+              </div>
+            </div>
+            <div className="info-modal-footer">
+              <p className="info-hint">💡 Atajo: <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd></p>
+              <button 
+                className="info-modal-btn"
+                onClick={() => setShowInfoModal(false)}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Contenedor principal del chat */}
       <div className="app-container">
         <div className="chat-container">
@@ -438,6 +551,18 @@ function App() {
                     title="Limpiar conversación"
                   >
                     🗑️ Limpiar conversación
+                  </button>
+                </div>
+                <div className="setting-item setting-item-mobile-only">
+                  <button
+                    onClick={() => {
+                      toggleSettings()
+                      loadSystemInfo()
+                    }}
+                    className="info-btn"
+                    title="Información del sistema"
+                  >
+                    🔮 Información del sistema
                   </button>
                 </div>
               </div>
