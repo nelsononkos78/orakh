@@ -32,7 +32,10 @@ En la sección de variables de entorno, configura:
 
 | Variable | Valor | Descripción |
 |----------|-------|-------------|
-| `DEEPSEEK_API_KEY` | `tu_api_key_aqui` | API Key de DeepSeek (requerido) |
+| `IA_PROVIDER` | `ATLAS` o `DEEPSEEK` | Proveedor de IA a usar (requerido) |
+| `DEEPSEEK_API_KEY` | `tu_api_key_aqui` | API Key de DeepSeek (requerido si IA_PROVIDER=DEEPSEEK) |
+| `ATLASCLOUD_API_KEY` | `tu_api_key_aqui` | API Key de Atlas Cloud (requerido si IA_PROVIDER=ATLAS) |
+| `ATLASCLOUD_MODEL` | `deepseek-ai/DeepSeek-V3-0324` | Modelo de Atlas a usar (opcional, tiene valor por defecto) |
 
 ### 4. Desplegar
 
@@ -90,8 +93,10 @@ curl -X POST https://orakh-backend.onrender.com/api/orakh \
 - Asegúrate de que `package.json` esté en la raíz del frontend
 
 ### Error: "API key not found"
-- Verifica que `DEEPSEEK_API_KEY` esté configurada en Render
-- Asegúrate de que la variable no tenga espacios extra
+- Verifica que `IA_PROVIDER` esté configurado (ATLAS o DEEPSEEK)
+- Si usas ATLAS, verifica que `ATLASCLOUD_API_KEY` esté configurada
+- Si usas DEEPSEEK, verifica que `DEEPSEEK_API_KEY` esté configurada
+- Asegúrate de que las variables no tengan espacios extra
 
 ### Error: "Frontend can't connect to backend"
 - Verifica que la URL del backend en `render.yaml` sea correcta

@@ -24,11 +24,24 @@ if [ ! -f .env ]; then
     fi
 fi
 
-# Verificar si DEEPSEEK_API_KEY está configurada
-if grep -q "your_deepseek_api_key_here" .env || grep -q "DEEPSEEK_API_KEY=$" .env; then
-    echo "❌ DEEPSEEK_API_KEY no está configurada en .env"
-    echo "🔑 Por favor edita el archivo .env y agrega tu API key de DeepSeek"
-    exit 1
+# Leer el proveedor de IA configurado
+IA_PROVIDER=$(grep "^IA_PROVIDER=" .env | cut -d '=' -f2 | tr -d ' ' | tr '[:lower:]' '[:upper:]' || echo "DEEPSEEK")
+
+# Validar API key según el proveedor
+if [ "$IA_PROVIDER" = "ATLAS" ]; then
+    if grep -q "your_atlas_api_key_here" .env || grep -q "ATLASCLOUD_API_KEY=$" .env || ! grep -q "ATLASCLOUD_API_KEY=" .env; then
+        echo "❌ ATLASCLOUD_API_KEY no está configurada en .env"
+        echo "🔑 Por favor edita el archivo .env y agrega tu API key de Atlas Cloud"
+        exit 1
+    fi
+    echo "✅ Usando proveedor: Atlas Cloud"
+else
+    if grep -q "your_deepseek_api_key_here" .env || grep -q "DEEPSEEK_API_KEY=$" .env; then
+        echo "❌ DEEPSEEK_API_KEY no está configurada en .env"
+        echo "🔑 Por favor edita el archivo .env y agrega tu API key de DeepSeek"
+        exit 1
+    fi
+    echo "✅ Usando proveedor: DeepSeek"
 fi
 
 cd backend

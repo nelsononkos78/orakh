@@ -7,7 +7,15 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
+      - key: IA_PROVIDER
+        sync: false
       - key: DEEPSEEK_API_KEY
+        sync: false
+      - key: DEEPSEEK_MODEL
+        sync: false
+      - key: ATLASCLOUD_API_KEY
+        sync: false
+      - key: ATLASCLOUD_MODEL
         sync: false
     healthCheckPath: /health
 

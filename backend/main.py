@@ -1,10 +1,11 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
 import os
 from deepseek_api import get_orakh_response
 from memory import add_to_memory, get_memory, clear_memory
+import traceback
 
 app = FastAPI()
 
@@ -38,19 +39,25 @@ class ProfundizarRequest(BaseModel):
 
 @app.post("/api/orakh")
 async def get_orakh_response_endpoint(user_message: UserMessage):
-    # Guarda el mensaje del usuario
-    add_to_memory("user", user_message.message)
+    try:
+        # Guarda el mensaje del usuario
+        add_to_memory("user", user_message.message)
 
-    # Obtiene todo el historial de conversación
-    full_messages = get_memory()
-    
-    # Llama al modelo con todo el historial
-    response = await get_orakh_response(full_messages)
+        # Obtiene todo el historial de conversación
+        full_messages = get_memory()
+        
+        # Llama al modelo con todo el historial
+        response = await get_orakh_response(full_messages)
 
-    # Guarda la respuesta también
-    add_to_memory("assistant", response)
+        # Guarda la respuesta también
+        add_to_memory("assistant", response)
 
-    return {"response": response}
+        return {"response": response}
+    except Exception as e:
+        error_trace = traceback.format_exc()
+        print(f"Error en /api/orakh: {str(e)}")
+        print(f"Traceback completo:\n{error_trace}")
+        raise HTTPException(status_code=500, detail=f"Error al obtener respuesta: {str(e)}")
 
 @app.post("/api/clear_memory")
 async def clear_memory_endpoint():
@@ -60,15 +67,21 @@ async def clear_memory_endpoint():
 
 @app.post("/api/profundizar")
 async def profundizar(data: ProfundizarRequest):
-    # Cargar prompt de profundidad
-    prompt = cargar_prompt("profundidad.txt")
-    prompt = prompt.replace("{respuesta_anterior}", data.respuesta_anterior)
-    prompt = prompt.replace("{mensaje_usuario}", data.mensaje_usuario or "")
-    
-    # Obtener respuesta usando el prompt modificado
-    response = await get_orakh_response([{"role": "user", "content": prompt}])
-    
-    # Guardar en memoria
-    add_to_memory("assistant", response)
-    
-    return {"response": response}
+    try:
+        # Cargar prompt de profundidad
+        prompt = cargar_prompt("profundidad.txt")
+        prompt = prompt.replace("{respuesta_anterior}", data.respuesta_anterior)
+        prompt = prompt.replace("{mensaje_usuario}", data.mensaje_usuario or "")
+        
+        # Obtener respuesta usando el prompt modificado
+        response = await get_orakh_response([{"role": "user", "content": prompt}])
+        
+        # Guardar en memoria
+        add_to_memory("assistant", response)
+        
+        return {"response": response}
+    except Exception as e:
+        error_trace = traceback.format_exc()
+        print(f"Error en /api/profundizar: {str(e)}")
+        print(f"Traceback completo:\n{error_trace}")
+        raise HTTPException(status_code=500, detail=f"Error al profundizar: {str(e)}")
