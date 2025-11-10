@@ -8,18 +8,18 @@ interface MessageBubbleProps {
   loading?: boolean
 }
 
+function formatTime(date: Date): string {
+  const hours = date.getHours()
+  const minutes = date.getMinutes()
+  const ampm = hours >= 12 ? 'p.m.' : 'a.m.'
+  const displayHours = hours % 12 || 12
+  const displayMinutes = minutes.toString().padStart(2, '0')
+  return `${displayHours}:${displayMinutes} ${ampm}`
+}
+
 export default function MessageBubble({ message, onProfundizar, loading }: MessageBubbleProps) {
   return (
     <div className={`message-bubble ${message.role}`}>
-      {message.role === 'orakh' && (
-        <div className="message-bubble-avatar message-bubble-avatar-external">
-          <img 
-            src={orakhAvatar} 
-            alt="Orakh Avatar" 
-            className="message-bubble-avatar-img"
-          />
-        </div>
-      )}
       <div className="message-bubble-content">
         {message.role === 'orakh' && (
           <div className="message-bubble-avatar message-bubble-avatar-internal">
@@ -37,10 +37,16 @@ export default function MessageBubble({ message, onProfundizar, loading }: Messa
             </div>
           </div>
         )}
-        <div 
-          className="message-bubble-text"
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(message.content) }} 
-        />
+        <div className="message-bubble-text-wrapper">
+          <div 
+            className={`message-bubble-text message-bubble-text-${message.role}`}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(message.content) }} 
+          />
+          <div className="message-bubble-timestamp">
+            {formatTime(message.timestamp)}
+          </div>
+          <div className={`message-bubble-tail message-bubble-tail-${message.role}`}></div>
+        </div>
         {message.role === 'orakh' && !message.isWelcome && onProfundizar && (
           <button
             onClick={() => onProfundizar(message)}
@@ -52,13 +58,6 @@ export default function MessageBubble({ message, onProfundizar, loading }: Messa
           </button>
         )}
       </div>
-      {message.role === 'user' && (
-        <div className="message-bubble-avatar user message-bubble-avatar-external">
-          <div className="message-bubble-avatar-placeholder">
-            👤
-          </div>
-        </div>
-      )}
     </div>
   )
 }
