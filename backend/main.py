@@ -32,6 +32,7 @@ async def test():
 
 class UserMessage(BaseModel):
     message: str
+    history: list = []  # Historial opcional del chat
 
 class ProfundizarRequest(BaseModel):
     respuesta_anterior: str
@@ -40,17 +41,30 @@ class ProfundizarRequest(BaseModel):
 @app.post("/api/orakh")
 async def get_orakh_response_endpoint(user_message: UserMessage):
     try:
-        # Guarda el mensaje del usuario
-        add_to_memory("user", user_message.message)
-
-        # Obtiene todo el historial de conversación
-        full_messages = get_memory()
+        # Si hay historial, usarlo; si no, usar memoria global (compatibilidad)
+        if user_message.history:
+            # Convertir historial del frontend al formato esperado
+            full_messages = []
+            for msg in user_message.history:
+                if isinstance(msg, dict):
+                    role = msg.get('role', 'user')
+                    content = msg.get('content', '')
+                    if role in ['user', 'assistant']:
+                        full_messages.append({"role": role, "content": content})
+            
+            # Agregar el nuevo mensaje del usuario
+            full_messages.append({"role": "user", "content": user_message.message})
+        else:
+            # Modo legacy: usar memoria global
+            add_to_memory("user", user_message.message)
+            full_messages = get_memory()
         
         # Llama al modelo con todo el historial
         response = await get_orakh_response(full_messages)
 
-        # Guarda la respuesta también
-        add_to_memory("assistant", response)
+        # Guardar en memoria global solo si no se usó historial (compatibilidad)
+        if not user_message.history:
+            add_to_memory("assistant", response)
 
         return {"response": response}
     except Exception as e:
